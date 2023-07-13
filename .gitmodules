@@ -26,16 +26,16 @@
 	path = napps/kytos/maintenance
 	url = https://github.com/kytos-ng/maintenance
 [submodule "napps/kytos/coloring"]
-	path = napps/kytos/coloring
+	path = napps/amlight/coloring
 	url = https://github.com/kytos-ng/coloring
 [submodule "napps/kytos/sdntrace"]
-	path = napps/kytos/sdntrace
+	path = napps/amlight/sdntrace
 	url = https://github.com/kytos-ng/sdntrace
 [submodule "napps/kytos/flow_stats"]
-	path = napps/kytos/flow_stats
+	path = napps/amlight/flow_stats
 	url = https://github.com/kytos-ng/flow_stats
 [submodule "napps/kytos/sdntrace_cp"]
-	path = napps/kytos/sdntrace_cp
+	path = napps/amlight/sdntrace_cp
 	url = https://github.com/kytos-ng/sdntrace_cp
 [submodule "napps/kytos/mef_eline"]
 	path = napps/kytos/mef_eline
