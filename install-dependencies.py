@@ -1,4 +1,4 @@
-#!/usr/env python
+#!/usr/bin/env python
 '''
 Installs kytos, several napps,
 and there dependencies to the currently active environment.
