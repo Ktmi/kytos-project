@@ -18,33 +18,36 @@ for dependency in dependencies:
 	os.system(f'pip install {dependency}')
 
 kytos_components = [
-	'python-openflow',
-	'kytos-utils',
-	'kytos',
+	('python-openflow', 'master'),
+	('kytos-utils', 'master'),
+	('kytos', 'master'),
 ]
 
-for name in kytos_components:
+for name, branch in kytos_components:
 	os.chdir(name)
+	os.system('git fetch')
+	os.system(f'git checkout {branch}')
+	os.system('git pull')
 	result = os.system('python setup.py develop')
 	if result:
-		raise Exception('Failed to install {name}')
+		raise Exception(f'Failed to install {name}')
 	os.chdir('..')
 
 napps = {
 	'kytos': [
-		'of_core',
-		'flow_manager',
-		'topology',
-		'of_lldp',
-		'pathfinder',
-		'maintenance',
-		'mef_eline',
+		('of_core', 'master'),
+		('flow_manager', 'master'),
+		('topology', 'master'),
+		('of_lldp', 'master'),
+		('pathfinder', 'master'),
+		('maintenance', 'master'),
+		('mef_eline', 'master'),
 	],
 	'amlight': [
-		'coloring',
-		'sdntrace',
-		'flow_stats',
-		'sdntrace_cp',
+		('coloring', 'master'),
+		('sdntrace', 'master'),
+		('flow_stats', 'master'),
+		('sdntrace_cp', 'master'),
 	],
 }
 
@@ -56,8 +59,11 @@ except FileNotFoundError:
 
 for username, user_napps in napps.items():
 	os.chdir(username)
-	for napp_name in user_napps:
+	for napp_name, branch in user_napps:
 		os.chdir(napp_name)
+		os.system('git fetch')
+		os.system(f'git checkout {branch}')
+		os.system('git pull')
 		result = os.system('python setup.py develop')
 		if result:
 			raise Exception(f'Failed to install {napp_name}')
