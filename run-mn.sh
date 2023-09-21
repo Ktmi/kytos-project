@@ -1,3 +1,3 @@
 #!/bin/bash
 
-sudo mn --controller=remote --topo=linear,4
+sudo mn --controller=remote --topo=torus,3,3

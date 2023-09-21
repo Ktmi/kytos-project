@@ -4,6 +4,6 @@ export MONGO_PASSWORD=napp_pw
 
 cd kytos/
 sudo docker-compose up -d
-kytosd -f 
+kytosd -f -E
 sudo docker-compose down
 cd ..
