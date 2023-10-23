@@ -40,3 +40,9 @@
 [submodule "napps/kytos/mef_eline"]
 	path = napps/kytos/mef_eline
 	url = https://github.com/kytos-ng/mef_eline
+[submodule "kytos-end-to-end-tests"]
+	path = kytos-end-to-end-tests
+	url = https://github.com/kytos-ng/kytos-end-to-end-tests
+[submodule "kytos-docker"]
+	path = kytos-docker
+	url = https://github.com/amlight/kytos-docker
