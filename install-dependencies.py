@@ -18,9 +18,9 @@ for dependency in dependencies:
 	os.system(f'pip install {dependency}')
 
 kytos_components = [
-	('python-openflow', 'master'),
-	('kytos-utils', 'master'),
-	('kytos', 'master'),
+	('python-openflow', '2023.1.0'),
+	('kytos-utils', '2023.1.0'),
+	('kytos', '2023.1.1'),
 ]
 
 for name, branch in kytos_components:
@@ -35,19 +35,19 @@ for name, branch in kytos_components:
 
 napps = {
 	'kytos': [
-		('of_core', 'master'),
-		('flow_manager', 'master'),
-		('topology', 'master'),
-		('of_lldp', 'master'),
-		('pathfinder', 'master'),
-		('maintenance', 'master'),
-		('mef_eline', 'master'),
+		('of_core', '2023.1.0'),
+		('flow_manager', '2023.1.1'),
+		('topology', '2023.1.1'),
+		('of_lldp', '2023.1.0'),
+		('pathfinder', '2023.1.0'),
+		('maintenance', '2023.1.0'),
+		('mef_eline', '2023.1.3'),
 	],
 	'amlight': [
-		('coloring', 'master'),
-		('sdntrace', 'master'),
-		('flow_stats', 'master'),
-		('sdntrace_cp', 'master'),
+		('coloring', '2023.1.0'),
+		('sdntrace', '2023.1.0'),
+		('flow_stats', '2023.1.0'),
+		('sdntrace_cp', '2023.1.0'),
 	],
 }
 
