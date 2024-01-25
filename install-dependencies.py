@@ -39,9 +39,9 @@ napps = {
 		('flow_manager', '2023.1.1'),
 		('topology', '2023.1.1'),
 		('of_lldp', '2023.1.0'),
-		('pathfinder', '2023.1.0'),
+		('pathfinder', '2023.1.1'),
 		('maintenance', '2023.1.0'),
-		('mef_eline', '2023.1.3'),
+		('mef_eline', '2023.1.4'),
 	],
 	'amlight': [
 		('coloring', '2023.1.0'),
