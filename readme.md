@@ -25,7 +25,7 @@ After cloning this project to your system, make sure that all submodules
 are initialized.
 
 ```bash
-git submodule init
+git submodule update --init
 ```
 
 Then create a python virtual environment which to install
