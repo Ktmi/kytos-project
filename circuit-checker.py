@@ -1,13 +1,12 @@
 #!/usr/bin/env python
 
 import asyncio
-import aiohttp
+import httpx
 import hashlib
-import itertools
 
 KYTOS_URL = 'http://localhost:8181'
 
-KYTOS_API = f"/api"
+KYTOS_API = f"{KYTOS_URL}/api"
 
 MEF_ELINE_API = f"{KYTOS_API}/kytos/mef_eline/v2"
 
@@ -55,33 +54,28 @@ forbidden_links = {
     ),
 }
 
-def batched(iterable, n):
-    # batched('ABCDEFG', 3) --> ABC DEF G
-    if n < 1:
-        raise ValueError('n must be at least one')
-    it = iter(iterable)
-    while batch := tuple(itertools.islice(it, n)):
-        yield batch
+async def task(client: httpx.AsyncClient):
+    response = await client.get(MEF_ELINE_API + f"/evc/",params={'checkConsistency':'True'})
 
-async def task(session: aiohttp.ClientSession):
-    async with session.get(MEF_ELINE_API + f"/evc/",params={'checkConsistency':'True'}) as response:
-        if not response.ok:
-            print(f"Failed to get EVCs")
-        evc_dict: dict = await response.json()
-        print(f'Received {len(evc_dict)} EVCs')
-        consistent_count = 0
-        for circuit in evc_dict.values():
-            path = circuit.get('current_path', [])
-            if any(link['id'] in forbidden_links for link in path):
-                print(f'EVC {circuit["id"]} {circuit["name"]} is not consistent')
-            elif not circuit.get('active', False):
-                print(f'EVC {circuit["id"]} {circuit["name"]} is not consistent')
-            else:
-                consistent_count +=1
-        print(f'Received {consistent_count} consistent EVCs')
+    if not response.is_success:
+        print(f"Failed to get EVCs")
+    evc_dict: dict = response.json()
+    print(f'Received {len(evc_dict)} EVCs')
+    consistent_count = 0
+    for circuit in evc_dict.values():
+        path = circuit.get('current_path', [])
+        if any(link['id'] in forbidden_links for link in path):
+            print(f'EVC {circuit["id"]} {circuit["name"]} is not consistent')
+        elif not circuit.get('active', False):
+            print(f'EVC {circuit["id"]} {circuit["name"]} is not consistent')
+        else:
+            consistent_count +=1
+    print(f'Received {consistent_count} consistent EVCs')
             
 async def main():
-    async with aiohttp.ClientSession(KYTOS_URL) as session:
-        await task(session)
+    async with httpx.AsyncClient(
+        timeout=httpx.Timeout(30.0),
+    ) as client:
+        await task(client)
 
 asyncio.run(main())

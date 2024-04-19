@@ -1,12 +1,12 @@
 #!/usr/bin/env python
 
 import asyncio
-import aiohttp
+import httpx
 import itertools
 
 KYTOS_URL = 'http://localhost:8181'
 
-KYTOS_API = f"/api"
+KYTOS_API = f"{KYTOS_URL}/api"
 
 MEF_ELINE_API = f"{KYTOS_API}/kytos/mef_eline/v2"
 
@@ -18,30 +18,32 @@ def batched(iterable, n):
     while batch := tuple(itertools.islice(it, n)):
         yield batch
 
-async def delete_evc(session, evc):
-    async with session.delete(MEF_ELINE_API + f"/evc/{evc}") as response:
-        if not response.ok:
-            print(f"Failed to delete EVC: {evc}")
+async def delete_evc(client: httpx.AsyncClient, evc):
+    response = await client.delete(f"{MEF_ELINE_API}/evc/{evc}")
+    if not response.is_success:
+        print(f"Failed to delete EVC: {evc}")
 
-async def delete_evcs(session):
-    async with session.get(MEF_ELINE_API+"/evc/") as response:
-        if not response.ok:
-            print('Failed to get EVCs')
-            return
-        evc_dict = await response.json()
-        for batch in batched(
-            [
-                delete_evc(session, evc)
-                for evc in evc_dict
-            ], 
-            5
-        ):
-            await asyncio.gather(
-                *batch
-            )
-            
+async def delete_evcs(client: httpx.AsyncClient):
+    response = await client.get(MEF_ELINE_API+"/evc/")
+    if not response.is_success:
+        print('Failed to get EVCs')
+        return
+    evc_dict = response.json()
+    for batch in batched(
+        [
+            delete_evc(client, evc)
+            for evc in evc_dict
+        ], 
+        5
+    ):
+        await asyncio.gather(
+            *batch
+        )
+        
 async def main():
-    async with aiohttp.ClientSession(KYTOS_URL) as session:
-        await delete_evcs(session)
+    async with httpx.AsyncClient(
+        timeout=httpx.Timeout(30.0)
+    ) as client:
+        await delete_evcs(client)
 
 asyncio.run(main())

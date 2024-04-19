@@ -1,13 +1,13 @@
 #!/usr/bin/env python
 
 import asyncio
-import aiohttp
+import httpx
 import itertools
 
 
 KYTOS_URL = 'http://localhost:8181'
 
-KYTOS_API = f"/api"
+KYTOS_API = f"{KYTOS_URL}/api"
 
 MEF_ELINE_API = f"{KYTOS_API}/kytos/mef_eline/v2"
 
@@ -23,23 +23,23 @@ def batched(iterable, n):
 
 
 
-async def deploy_evc(session: aiohttp.ClientSession, evc):
-    async with session.post(
+async def deploy_evc(client: httpx.AsyncClient, evc):
+    response = await client.post(
         MEF_ELINE_API+'/evc/',
         json=evc
-    ) as response:
-        if not response.ok:
-            data = await response.content.read()
-            print(f'Failed to deploy {evc}, reason {data}')
-            return False
-        evc['id'] = (await response.json())['circuit_id']
-        return True
+    )
+    if not response.is_success:
+        data = response.content()
+        print(f'Failed to deploy {evc}, reason {data}')
+        return False
+    evc['id'] = response.json()['circuit_id']
+    return True
 
 
-async def deploy_evcs(session: aiohttp.ClientSession, evcs):
+async def deploy_evcs(client: httpx.AsyncClient, evcs):
     for batch in batched(
         [
-            deploy_evc(session, evc)
+            deploy_evc(client, evc)
             for evc in evcs
         ],
         5
@@ -210,12 +210,14 @@ evcs4 = [
     for i in range(evc_cnt)
 ]
 async def main():
-    async with aiohttp.ClientSession(KYTOS_URL) as session:
+    async with httpx.AsyncClient(
+        timeout=httpx.Timeout(30.0),
+    ) as client:
         await asyncio.gather(
-            deploy_evcs(session, evcs1),
-            deploy_evcs(session, evcs2),
-            deploy_evcs(session, evcs3),
-            deploy_evcs(session, evcs4)
+            deploy_evcs(client, evcs1),
+            deploy_evcs(client, evcs2),
+            deploy_evcs(client, evcs3),
+            deploy_evcs(client, evcs4)
         )
 
 asyncio.run(main())

@@ -1,14 +1,14 @@
 #!/usr/bin/env python
 
 import asyncio
-import aiohttp
 import hashlib
+import httpx
 import itertools
 
 
 KYTOS_URL = 'http://localhost:8181'
 
-KYTOS_API = f"/api"
+KYTOS_API = f"{KYTOS_URL}/api"
 
 TOPOLOGY_API = f"{KYTOS_API}/kytos/topology/v3"
 
@@ -40,22 +40,22 @@ def batched(iterable, n):
 
 
 
-async def add_metadata(session: aiohttp.ClientSession, item_id, metadata):
-    async with session.post(
-        TOPOLOGY_API+f'/{item_id}/metadata',
+async def add_metadata(client: httpx.AsyncClient, item_id, metadata):
+    response = await client.post(
+        f'{TOPOLOGY_API}/{item_id}/metadata',
         json=metadata
-    ) as response:
-        if not response.ok:
-            data = await response.json()
-            print(f'Failed to add metadata to item {item_id}, reason {data}')
-            return False
-        return True
+    )
+    if not response.is_success:
+        data = response.json()
+        print(f'Failed to add metadata to item {item_id}, reason {data}')
+        return False
+    return True
 
 
-async def deploy_metadata(session: aiohttp.ClientSession, meta_info):
+async def deploy_metadata(client: httpx.AsyncClient, meta_info):
     for batch in batched(
         [
-            add_metadata(session, *command)
+            add_metadata(client, *command)
             for command in meta_info
         ],
         5
@@ -116,10 +116,12 @@ border_links = [
 ]
 
 async def main():
-    async with aiohttp.ClientSession(KYTOS_URL) as session:
+    async with httpx.AsyncClient(
+        timeout=httpx.Timeout(30.0),
+    ) as client:
         await asyncio.gather(
-            deploy_metadata(session, switch_positions),
-            deploy_metadata(session, border_links),
+            deploy_metadata(client, switch_positions),
+            deploy_metadata(client, border_links),
         )
 
 asyncio.run(main())
