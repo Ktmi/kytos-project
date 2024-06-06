@@ -9,9 +9,9 @@ import os
 NAPP_DEV_DIR = 'napps/'
 
 dependencies = [
-	'setuptools==60.2.0',
-	'pip==21.3.1',
-	'wheel==0.37.1',
+	'setuptools',
+	'pip',
+	'wheel',
 ]
 
 for dependency in dependencies:
@@ -28,7 +28,7 @@ for name, branch in kytos_components:
 	os.system('git fetch')
 	os.system(f'git checkout {branch}')
 	os.system('git pull')
-	result = os.system('python setup.py develop')
+	result = os.system('pip install -e .')
 	if result:
 		raise Exception(f'Failed to install {name}')
 	os.chdir('..')
@@ -64,7 +64,7 @@ for username, user_napps in napps.items():
 		os.system('git fetch')
 		os.system(f'git checkout {branch}')
 		os.system('git pull')
-		result = os.system('python setup.py develop')
+		result = os.system('pip install -e .')
 		if result:
 			raise Exception(f'Failed to install {napp_name}')
 		os.chdir('..')
