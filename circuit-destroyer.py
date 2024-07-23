@@ -23,22 +23,38 @@ async def delete_evc(client: httpx.AsyncClient, evc):
     if not response.is_success:
         print(f"Failed to delete EVC: {evc}")
 
+async def worker(client, queue):
+    while True:
+        evc = await queue.get()
+
+        await delete_evc(client, evc)
+
+        queue.task_done()
+
 async def delete_evcs(client: httpx.AsyncClient):
     response = await client.get(MEF_ELINE_API+"/evc/")
     if not response.is_success:
         print('Failed to get EVCs')
         return
     evc_dict = response.json()
-    for batch in batched(
-        [
-            delete_evc(client, evc)
-            for evc in evc_dict
-        ], 
-        5
-    ):
-        await asyncio.gather(
-            *batch
-        )
+
+    queue = asyncio.Queue()
+
+    for evc in evc_dict:
+        queue.put_nowait(evc)
+
+    worker_tasks = []
+    
+    for i in range(20):
+        task = asyncio.create_task(worker(client, queue))
+        worker_tasks.append(task)
+
+    await queue.join()
+
+    for task in worker_tasks:
+        task.cancel()
+
+    await asyncio.gather(*worker_tasks, return_exceptions=True)
         
 async def main():
     async with httpx.AsyncClient(

@@ -2,7 +2,6 @@
 
 import asyncio
 import httpx
-import itertools
 
 
 KYTOS_URL = 'http://localhost:8181'
@@ -13,42 +12,49 @@ MEF_ELINE_API = f"{KYTOS_API}/kytos/mef_eline/v2"
 
 VLAN_TAG_TYPE = 1
 
-def batched(iterable, n):
-    # batched('ABCDEFG', 3) --> ABC DEF G
-    if n < 1:
-        raise ValueError('n must be at least one')
-    it = iter(iterable)
-    while batch := tuple(itertools.islice(it, n)):
-        yield batch
-
-
-
 async def deploy_evc(client: httpx.AsyncClient, evc):
     response = await client.post(
         MEF_ELINE_API+'/evc/',
         json=evc
     )
     if not response.is_success:
-        data = response.content()
+        data = response.content
         print(f'Failed to deploy {evc}, reason {data}')
         return False
     evc['id'] = response.json()['circuit_id']
     return True
 
+async def worker(client, queue):
+    while True:
+        evc = await queue.get()
+
+        await deploy_evc(client, evc)
+
+        queue.task_done()
+
 
 async def deploy_evcs(client: httpx.AsyncClient, evcs):
-    for batch in batched(
-        [
-            deploy_evc(client, evc)
-            for evc in evcs
-        ],
-        5
-    ):
-        await asyncio.gather(
-            *batch
-        )
 
-evc_cnt = 100
+    queue = asyncio.Queue()
+
+    for evc in evcs:
+        queue.put_nowait(evc)
+
+    worker_tasks = []
+    
+    for i in range(20):
+        task = asyncio.create_task(worker(client, queue))
+        worker_tasks.append(task)
+
+    await queue.join()
+
+    for task in worker_tasks:
+        task.cancel()
+
+    await asyncio.gather(*worker_tasks, return_exceptions=True)
+
+
+evc_cnt = 3200
 
 evcs1 = [
     {
@@ -67,7 +73,7 @@ evcs1 = [
                 'value': 100 + i,
             }
         },
-        'dynamic_backup_path': True,
+        'dynamic_backup_path': False,
         'primary_constraints': {
             'mandatory_metrics': {
                 'not_ownership': ['border'],
@@ -110,14 +116,14 @@ evcs2 = [
             'interface_id': '00:00:00:00:00:00:01:01:1',
             'tag': {
                 'tag_type': VLAN_TAG_TYPE,
-                'value': 200 + i,
+                'value': 900 + i,
             }
         },
         'uni_z': {
             'interface_id': '00:00:00:00:00:00:01:03:1',
             'tag': {
                 'tag_type': VLAN_TAG_TYPE,
-                'value': 200 + i,
+                'value': 900 + i,
             }
         },
         'dynamic_backup_path': True,
@@ -127,7 +133,7 @@ evcs2 = [
             },
         },
     }
-    for i in range(evc_cnt)
+    for i in range(0)
 ]
 
 evcs3 = [
@@ -137,14 +143,14 @@ evcs3 = [
             'interface_id': '00:00:00:00:00:00:03:01:1',
             'tag': {
                 'tag_type': VLAN_TAG_TYPE,
-                'value': 100 + i,
+                'value': 1700 + i,
             }
         },
         'uni_z': {
             'interface_id': '00:00:00:00:00:00:03:03:1',
             'tag': {
                 'tag_type': VLAN_TAG_TYPE,
-                'value': 100 + i,
+                'value': 1700 + i,
             }
         },
         'dynamic_backup_path': True,
@@ -180,7 +186,7 @@ evcs3 = [
             },
         ]
     }
-    for i in range(evc_cnt)
+    for i in range(0)
 ]
 
 evcs4 = [
@@ -190,14 +196,14 @@ evcs4 = [
             'interface_id': '00:00:00:00:00:00:03:01:1',
             'tag': {
                 'tag_type': VLAN_TAG_TYPE,
-                'value': 200 + i,
+                'value': 2500 + i,
             }
         },
         'uni_z': {
             'interface_id': '00:00:00:00:00:00:03:03:1',
             'tag': {
                 'tag_type': VLAN_TAG_TYPE,
-                'value': 200 + i,
+                'value': 2500 + i,
             }
         },
         'dynamic_backup_path': True,
@@ -207,7 +213,7 @@ evcs4 = [
             },
         },
     }
-    for i in range(evc_cnt)
+    for i in range(0)
 ]
 async def main():
     async with httpx.AsyncClient(
