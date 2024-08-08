@@ -5,6 +5,7 @@ and there dependencies to the currently active environment.
 '''
 
 import os
+import shutil
 
 NAPP_DEV_DIR = 'napps/'
 
@@ -33,6 +34,23 @@ for name, branch in kytos_components:
 		raise Exception(f'Failed to install {name}')
 	os.chdir('..')
 
+ui = [('ui', 'master')]
+
+for name, branch in ui:
+	os.chdir(name)
+	os.system('git fetch')
+	os.system(f'git checkout {branch}')
+	os.system('git pull')
+	os.system('npm install')
+	os.system('npm run build')
+	try:
+		os.mkdir('../kytos/kytos/web-ui/')
+	except FileExistsError as exc:
+		shutil.rmtree('../kytos/kytos/web-ui/')
+		os.mkdir('../kytos/kytos/web-ui/')
+	os.system('tar -xvf latest.zip -C ../kytos/kytos/web-ui/')
+	os.chdir('..')
+
 napps = {
 	'kytos': [
 		('of_core', 'master'),
@@ -42,6 +60,8 @@ napps = {
 		('pathfinder', 'master'),
 		('maintenance', 'master'),
 		('mef_eline', 'master'),
+		('of_multi_table', 'master'),
+		('telemetry_int', 'master'),
 	],
 	'amlight': [
 		('coloring', 'master'),

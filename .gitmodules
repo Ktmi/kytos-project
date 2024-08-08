@@ -46,3 +46,12 @@
 [submodule "kytos-docker"]
 	path = kytos-docker
 	url = https://github.com/amlight/kytos-docker
+[submodule "napps/kytos/of_multi_table"]
+	path = napps/kytos/of_multi_table
+	url = https://github.com/kytos-ng/of_multi_table
+[submodule "napps/kytos/telemetry_int"]
+	path = napps/kytos/telemetry_int
+	url = https://github.com/kytos-ng/telemetry_int
+[submodule "ui"]
+	path = ui
+	url = https://github.com/kytos-ng/ui.git

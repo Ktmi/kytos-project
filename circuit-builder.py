@@ -219,11 +219,7 @@ async def main():
     async with httpx.AsyncClient(
         timeout=httpx.Timeout(30.0),
     ) as client:
-        await asyncio.gather(
-            deploy_evcs(client, evcs1),
-            deploy_evcs(client, evcs2),
-            deploy_evcs(client, evcs3),
-            deploy_evcs(client, evcs4)
-        )
+        evcs = [*evcs1, *evcs2, *evcs3, *evcs4]
+        await deploy_evcs(client, evcs)
 
 asyncio.run(main())

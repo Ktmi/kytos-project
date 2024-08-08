@@ -1,5 +1,5 @@
 #!/bin/bash
 
 cd kytos/
-sudo docker-compose up
+sudo docker-compose -p kytos-db up
 cd ..
