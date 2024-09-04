@@ -13,6 +13,10 @@ dependencies = [
 	'setuptools',
 	'pip',
 	'wheel',
+	'tox',
+	'pip-tools',
+	'isort',
+	'black',
 ]
 
 for dependency in dependencies:
