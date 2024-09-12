@@ -52,7 +52,7 @@ for name, branch in ui:
 	except FileExistsError as exc:
 		shutil.rmtree('../kytos/kytos/web-ui/')
 		os.mkdir('../kytos/kytos/web-ui/')
-	os.system('tar -xvf latest.zip -C ../kytos/kytos/web-ui/')
+	os.system('unzip latest.zip -d ../kytos/kytos/web-ui/')
 	os.chdir('..')
 
 napps = {
