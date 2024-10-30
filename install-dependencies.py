@@ -23,9 +23,9 @@ for dependency in dependencies:
 	os.system(f'pip install {dependency}')
 
 kytos_components = [
-	('python-openflow', 'master'),
-	('kytos-utils', 'master'),
-	('kytos', 'master'),
+	('python-openflow', '2023.2.0'),
+	('kytos-utils', '2023.2.0'),
+	('kytos', '2023.2.0'),
 ]
 
 for name, branch in kytos_components:
@@ -38,7 +38,7 @@ for name, branch in kytos_components:
 		raise Exception(f'Failed to install {name}')
 	os.chdir('..')
 
-ui = [('ui', 'master')]
+ui = [('ui', '2023.2.3')]
 
 for name, branch in ui:
 	os.chdir(name)
@@ -57,21 +57,21 @@ for name, branch in ui:
 
 napps = {
 	'kytos': [
-		('of_core', 'master'),
-		('flow_manager', 'master'),
-		('topology', 'master'),
-		('of_lldp', 'master'),
-		('pathfinder', 'master'),
-		('maintenance', 'master'),
-		('mef_eline', 'master'),
-		('of_multi_table', 'master'),
-		('telemetry_int', 'master'),
+		('of_core','2023.2.0'),
+		('flow_manager', '2023.2.0'),
+		('topology', '2023.2.4'),
+		('of_lldp', '2023.2.1'),
+		('pathfinder', '2023.2.0'),
+		('maintenance', '2023.2.0'),
+		('mef_eline', '2023.2.4'),
+		('of_multi_table', '2023.2.0'),
+		('telemetry_int', '2023.2.0'),
 	],
 	'amlight': [
-		('coloring', 'master'),
-		('sdntrace', 'master'),
-		('flow_stats', 'master'),
-		('sdntrace_cp', 'master'),
+		('coloring', '2023.2.0'),
+		('sdntrace', '2023.2.0'),
+		('flow_stats', '2023.1.0'),
+		('sdntrace_cp', '2023.2.0'),
 	],
 }
 
