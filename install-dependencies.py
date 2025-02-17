@@ -72,6 +72,7 @@ napps = {
 		('sdntrace', 'master'),
 		('flow_stats', 'master'),
 		('sdntrace_cp', 'master'),
+		('noviflow', 'master'),
 	],
 }
 

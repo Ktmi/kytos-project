@@ -55,3 +55,6 @@
 [submodule "ui"]
 	path = ui
 	url = https://github.com/kytos-ng/ui.git
+[submodule "napps/amlight/noviflow"]
+	path = napps/amlight/noviflow
+	url = https://github.com/kytos-ng/noviflow
