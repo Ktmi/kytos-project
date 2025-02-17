@@ -32,8 +32,8 @@
 	path = napps/amlight/sdntrace
 	url = https://github.com/kytos-ng/sdntrace
 [submodule "napps/kytos/flow_stats"]
-	path = napps/amlight/flow_stats
-	url = https://github.com/kytos-ng/flow_stats
+	path = napps/amlight/kytos_stats
+	url = https://github.com/kytos-ng/kytos_stats
 [submodule "napps/kytos/sdntrace_cp"]
 	path = napps/amlight/sdntrace_cp
 	url = https://github.com/kytos-ng/sdntrace_cp
