@@ -70,7 +70,7 @@ napps = {
 	'amlight': [
 		('coloring', 'master'),
 		('sdntrace', 'master'),
-		('flow_stats', 'master'),
+		('kytos_stats', 'master'),
 		('sdntrace_cp', 'master'),
 		('noviflow', 'master'),
 	],
