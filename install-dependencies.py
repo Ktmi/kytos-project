@@ -17,6 +17,10 @@ dependencies = [
 	'pip-tools',
 	'isort',
 	'black',
+	'mock',
+	'pytest',
+	'mininet',
+	'pylint',
 ]
 
 for dependency in dependencies:
