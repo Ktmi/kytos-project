@@ -10,8 +10,8 @@ import shutil
 NAPP_DEV_DIR = 'napps/'
 
 dependencies = [
+	'pip --upgrade',
 	'setuptools',
-	'pip',
 	'wheel',
 	'tox',
 	'pip-tools',
@@ -51,12 +51,11 @@ for name, branch in ui:
 	os.system('git pull')
 	os.system('npm install')
 	os.system('npm run build')
-	try:
-		os.mkdir('../kytos/kytos/web-ui/')
-	except FileExistsError as exc:
-		shutil.rmtree('../kytos/kytos/web-ui/')
-		os.mkdir('../kytos/kytos/web-ui/')
-	os.system('unzip latest.zip -d ../kytos/kytos/web-ui/')
+	shutil.rmtree(
+		'../kytos/kytos/web-ui/',
+		ignore_errors=True
+	)
+	os.rename('web-ui/', '../kytos/kytos/web-ui/')
 	os.chdir('..')
 
 napps = {
@@ -70,6 +69,7 @@ napps = {
 		('mef_eline', 'master'),
 		('of_multi_table', 'master'),
 		('telemetry_int', 'master'),
+		('kafka_events', 'master'),
 	],
 	'amlight': [
 		('coloring', 'master'),

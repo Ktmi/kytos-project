@@ -58,3 +58,9 @@
 [submodule "napps/amlight/noviflow"]
 	path = napps/amlight/noviflow
 	url = https://github.com/kytos-ng/noviflow
+[submodule "kytos-ng.github.io"]
+	path = kytos-ng.github.io
+	url = https://github.com/kytos-ng/kytos-ng.github.io
+[submodule "napps/kytos/kafka_events"]
+	path = napps/kytos/kafka_events
+	url = https://github.com/kytos-ng/kafka_events
