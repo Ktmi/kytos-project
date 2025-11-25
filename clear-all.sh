@@ -4,3 +4,4 @@
 ./clear-kytos.sh
 ./clear-db.sh
 ./clear-apm.sh
+./clear-kafka.sh
