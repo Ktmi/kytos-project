@@ -1,10 +1,6 @@
 #!/bin/bash
 
-cd kytos-docker
-
-sudo docker build . -t amlight/kytos --no-cache
-
-cd ../kytos-end-to-end-tests
+cd kytos-end-to-end-tests
 
 sudo docker compose -p kytos-tests up -d
 
