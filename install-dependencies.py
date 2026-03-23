@@ -10,7 +10,7 @@ import shutil
 NAPP_DEV_DIR = 'napps/'
 
 dependencies = [
-	'pip --upgrade',
+	'pip==24.3.1',
 	'setuptools',
 	'wheel',
 	'tox',
